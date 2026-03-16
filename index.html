@@ -875,6 +875,272 @@
       .b2{right:0;top:20%}
       .b3{left:5%;bottom:6%}
     }
+
+    /* ===== MOBILE FIRST OVERRIDES ===== */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
+  .wrap {
+    width: calc(100% - 20px);
+  }
+
+  .section {
+    padding: 44px 0;
+  }
+
+  .section-head {
+    display: block;
+    margin-bottom: 18px;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+    line-height: 1.05;
+    margin-bottom: 10px;
+  }
+
+  .section-head p {
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  /* NAV */
+  .nav {
+    top: 10px;
+    margin-top: 10px;
+    border-radius: 20px;
+  }
+
+  .nav-inner {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .brand-copy strong {
+    font-size: 0.95rem;
+  }
+
+  .brand-copy span {
+    font-size: 0.75rem;
+  }
+
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+
+  .nav-links a {
+    text-align: center;
+    padding: 12px 10px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.06);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 26px 0 20px;
+  }
+
+  .hero-copy {
+    order: 2;
+  }
+
+  .hero-visual {
+    order: 1;
+    min-height: 340px;
+  }
+
+  .eyebrow {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    padding: 9px 12px;
+    margin-bottom: 14px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 10vw, 3rem);
+    max-width: 100%;
+    line-height: 0.98;
+  }
+
+  .hero-sub {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    margin: 16px 0;
+  }
+
+  .hero-meta {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 20px 0 22px;
+  }
+
+  .meta-card {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .btn,
+  .pill {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  /* VISUEL */
+  .orbital,
+  .ring,
+  .ring-2 {
+    display: none;
+  }
+
+  .portrait-shell {
+    width: min(280px, 82vw);
+    aspect-ratio: 0.84 / 1;
+    margin: 0 auto;
+  }
+
+  .portrait-card {
+    border-radius: 24px;
+    transform: none !important;
+  }
+
+  .portrait-frame img {
+    height: 108%;
+  }
+
+  .portrait-glow {
+    filter: blur(20px);
+    opacity: .7;
+  }
+
+  .visual-badge {
+    position: static;
+    transform: none !important;
+    max-width: none;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  /* ABOUT / CONTACT */
+  .about-grid,
+  .contact-panel,
+  .edu-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .about-main,
+  .about-side,
+  .contact-main,
+  .contact-side,
+  .edu-card {
+    padding: 20px;
+  }
+
+  /* TAGS */
+  .tags {
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: 0.86rem;
+    padding: 9px 12px;
+  }
+
+  /* STATS */
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat strong {
+    font-size: 1.35rem;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .skill-card {
+    grid-column: auto;
+    min-height: auto;
+    padding: 20px;
+  }
+
+  /* TIMELINE */
+  .timeline-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 18px;
+  }
+
+  .timeline-item::before {
+    display: none;
+  }
+
+  .time {
+    padding-left: 16px;
+    font-size: 0.92rem;
+  }
+
+  .timeline-body h3 {
+    font-size: 1.02rem;
+  }
+
+  .timeline-body p {
+    line-height: 1.65;
+  }
+
+  /* CANVAS / FX */
+  #scene,
+  .grid,
+  .noise,
+  .scanlines {
+    display: none;
+  }
+
+  .panel,
+  .meta-card,
+  .visual-badge,
+  .btn,
+  .pill {
+    box-shadow: 0 10px 30px rgba(0,0,0,.22);
+    backdrop-filter: blur(10px);
+  }
+}
   </style>
 </head>
 <body>
@@ -1379,5 +1645,29 @@
       document.querySelector(".ring-2").style.transform = `translate(-50%,-50%) rotate(${-x * 1.2}deg)`;
     });
   </script>
+
+  <script>
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+  if (!isMobile) {
+    document.querySelectorAll(".tilt").forEach(el => {
+      el.addEventListener("mousemove", e => applyTilt(el, e));
+      el.addEventListener("mouseleave", () => resetTilt(el));
+      el.addEventListener("touchend", () => resetTilt(el), { passive:true });
+    });
+
+    const portraitCard = document.getElementById("portraitCard");
+    document.addEventListener("mousemove", e => {
+      const x = (e.clientX / innerWidth - 0.5) * 12;
+      const y = (e.clientY / innerHeight - 0.5) * 10;
+      portraitCard.style.transform =
+        `rotateY(${-10 + x * 0.35}deg) rotateX(${8 - y * 0.35}deg) translateY(${Math.sin(performance.now()*0.0012)*-4}px)`;
+
+      document.querySelector(".ring").style.transform = `translate(-50%,-50%) rotate(${x * 1.6}deg)`;
+      document.querySelector(".ring-2").style.transform = `translate(-50%,-50%) rotate(${-x * 1.2}deg)`;
+    });
+  }
+</script>
+
 </body>
 </html>
