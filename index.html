@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gautier Souffois — Portfolio | Infrastructure & Cybersécurité</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#08111f;
+      --bg-2:#0d1728;
+      --bg-3:#13233b;
+      --panel:rgba(255,255,255,.06);
+      --panel-2:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.11);
+      --text:#f5f7fb;
+      --muted:#99a8c0;
+      --muted-2:#6e7d96;
+      --accent:#7bdcff;
+      --accent-2:#8a7dff;
+      --accent-3:#2de0c4;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:26px;
+      --max:1380px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(123,220,255,.15), transparent 24%),
+        radial-gradient(circle at 85% 15%, rgba(138,125,255,.12), transparent 22%),
+        radial-gradient(circle at 60% 70%, rgba(45,224,196,.08), transparent 20%),
+        linear-gradient(180deg, #07101c 0%, #091321 38%, #0a1524 100%);
+      overflow-x:hidden;
+    }
+
+    .noise,
+    .grid,
+    #scene{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+    }
+
+    #scene{
+      z-index:0;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .grid{
+      z-index:1;
+      opacity:.16;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size:48px 48px;
+      mask-image: radial-gradient(circle at center, rgba(0,0,0,.9), transparent 82%);
+    }
+
+    .noise{
+      z-index:2;
+      opacity:.06;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.35) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.22) 0 1px, transparent 1px),
+        radial-gradient(circle at 50% 70%, rgba(255,255,255,.28) 0 1px, transparent 1px),
+        radial-gradient(circle at 30% 80%, rgba(255,255,255,.22) 0 1px, transparent 1px);
+      background-size: 180px 180px;
+      mix-blend-mode: soft-light;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:3;
+      width:min(var(--max), calc(100% - 48px));
+      margin:0 auto;
+    }
+
+    .nav{
+      position:sticky;
+      top:18px;
+      z-index:20;
+      margin-top:18px;
+      backdrop-filter: blur(18px);
+      background:linear-gradient(180deg, rgba(14,22,37,.78), rgba(12,18,31,.6));
+      border:1px solid var(--border);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+    }
+
+    .nav-inner{
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+      padding:0 16px 0 22px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+
+    .brand-mark{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:
+        linear-gradient(135deg, rgba(123,220,255,.25), rgba(138,125,255,.25));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.15), 0 10px 30px rgba(0,0,0,.22);
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+
+    .brand-copy strong{
+      display:block;
+      font-size:.98rem;
+      line-height:1.1;
+    }
+
+    .brand-copy span{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+
+    .nav-links{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .nav-links a,
+    .pill,
+    .btn{
+      text-decoration:none;
+      color:var(--text);
+      border:1px solid transparent;
+      transition:.25s ease;
+    }
+
+    .nav-links a{
+      padding:10px 14px;
+      border-radius:999px;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .nav-links a:hover{
+      color:#fff;
+      background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.08);
+    }
+
+    .hero{
+      min-height:calc(100vh - 100px);
+      display:grid;
+      grid-template-columns: 1.2fr .95fr;
+      align-items:center;
+      gap:48px;
+      padding:72px 0 44px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      color:#dce7f8;
+      margin-bottom:18px;
+      backdrop-filter: blur(12px);
+      box-shadow:0 8px 24px rgba(0,0,0,.18);
+      font-size:.92rem;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:linear-gradient(180deg, var(--accent), #d2f6ff);
+      box-shadow:0 0 18px var(--accent);
+    }
+
+    .hero h1{
+      margin:0;
+      font-family:Manrope, Inter, sans-serif;
+      font-weight:800;
+      font-size:clamp(2.8rem, 7vw, 6.2rem);
+      line-height:.95;
+      letter-spacing:-.05em;
+      max-width:12ch;
+    }
+
+    .hero h1 .gradient{
+      background:linear-gradient(90deg, #ffffff, #cdefff 38%, #cabfff 80%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .hero-sub{
+      margin:22px 0 18px;
+      max-width:60ch;
+      font-size:1.08rem;
+      line-height:1.75;
+      color:#c8d4e8;
+    }
+
+    .hero-meta{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:14px;
+      margin:28px 0 30px;
+    }
+
+    .meta-card{
+      padding:18px 18px 16px;
+      border-radius:20px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(16px);
+      transform-style:preserve-3d;
+    }
+
+    .meta-card span{
+      display:block;
+      color:var(--muted);
+      font-size:.8rem;
+      margin-bottom:8px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .meta-card strong{
+      font-size:1rem;
+      line-height:1.4;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .btn,
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      padding:0 20px;
+      border-radius:999px;
+      font-weight:700;
+      letter-spacing:.01em;
+      backdrop-filter: blur(14px);
+      box-shadow:var(--shadow);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg, var(--accent), #b7f2ff);
+      color:#091321;
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.04);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,.05);
+      border-color:rgba(255,255,255,.1);
+      color:#e6efff;
+    }
+
+    .btn-secondary:hover{
+      background:rgba(255,255,255,.08);
+      transform:translateY(-2px);
+    }
+
+    .hero-visual{
+      position:relative;
+      isolation:isolate;
+      min-height:680px;
+      display:grid;
+      place-items:center;
+      perspective:1400px;
+    }
+
+    .orbital{
+      position:absolute;
+      inset:8% 8% 10%;
+      border-radius:40px;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(123,220,255,.12), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
+      transform:rotateX(8deg) rotateY(-10deg);
+      overflow:hidden;
+    }
+
+    .orbital::before{
+      content:"";
+      position:absolute;
+      inset:18px;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.06);
+      pointer-events:none;
+    }
+
+    .ring,
+    .ring-2{
+      z-index:1;
+      pointer-events:none; 
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      border:1px solid rgba(123,220,255,.14);
+      box-shadow:0 0 60px rgba(123,220,255,.07);
+    }
+
+    .ring{ width:430px; height:430px; }
+    .ring-2{ width:560px; height:560px; border-color:rgba(138,125,255,.14); }
+
+    .portrait-shell{
+  position:relative;
+  width:min(440px, 82%);
+  aspect-ratio: .84 / 1;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  transform-style:preserve-3d;
+  z-index:10;   /* AJOUTE ÇA */
+}
+
+    .portrait-glow{
+  position:absolute;
+  width:70%;
+  height:70%;
+  bottom:15%;
+  left:15%;
+
+  filter:blur(30px);
+  z-index:1;
+}
+
+    .portrait-card{
+      position:relative;
+      z-index:11;
+      width:100%;
+      height:100%;
+      border-radius:34px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      box-shadow:
+        0 40px 90px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.18);
+      backdrop-filter: blur(12px);
+      transform:rotateY(-10deg) rotateX(8deg);
+    }
+
+    .portrait-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(120deg, transparent 0%, rgba(255,255,255,.1) 20%, transparent 40%);
+      transform:translateX(-120%);
+      animation:shimmer 6s linear infinite;
+      pointer-events:none;
+    }
+
+    @keyframes shimmer{
+      to{ transform:translateX(130%) }
+    }
+
+  
+
+    .portrait-frame img{
+  position:absolute;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  height:115%;
+  width:auto;
+  object-fit:contain;
+  z-index:2;
+}
+
+    .scanlines{
+      position:absolute;
+      inset:0;
+      z-index:2;
+      background:repeating-linear-gradient(
+        180deg,
+        rgba(255,255,255,.04) 0,
+        rgba(255,255,255,.04) 1px,
+        transparent 2px,
+        transparent 7px
+      );
+      mix-blend-mode:soft-light;
+      opacity:.35;
+      pointer-events:none;
+    }
+
+    .visual-badge{
+        z-index:11;
+      position:absolute;
+      padding:9px 5px;
+      border-radius:18px;
+      background:rgba(9,17,31,.68);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+      min-width:110px;
+    }
+
+    .visual-badge span{
+      display:block;
+      color:var(--muted);
+      font-size:.78rem;
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .visual-badge strong{
+      font-size:.95rem;
+      line-height:1.35;
+    }
+
+    .b1{ top:12%; left:2%; transform:rotate(-5deg); }
+    .b2{ right:2%; top:22%; transform:rotate(4deg); }
+    .b3{ left:10%; bottom:10%; transform:rotate(3deg); }
+
+    .section{
+      padding:70px 0;
+    }
+
+    .section-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:24px;
+      margin-bottom:26px;
+    }
+
+    .section-head h2{
+      margin:0;
+      font-family:Manrope, Inter, sans-serif;
+      font-size:clamp(1.8rem, 4vw, 3.4rem);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .section-head p{
+      max-width:56ch;
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.035));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      border-radius:32px;
+      backdrop-filter: blur(16px);
+    }
+
+    .about-grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:18px;
+    }
+
+    .about-main,
+    .about-side{
+      padding:28px;
+    }
+
+    .about-main p,
+    .about-side p{
+      color:#d1dbee;
+      line-height:1.8;
+      margin:0 0 18px;
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .tag{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:#dce8fb;
+      font-size:.92rem;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .stat{
+      padding:18px;
+      border-radius:22px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .stat strong{
+      display:block;
+      font-size:1.65rem;
+      margin-bottom:6px;
+    }
+
+    .stat span{
+      color:var(--muted);
+      line-height:1.5;
+      font-size:.92rem;
+    }
+
+    .skills-grid{
+      display:grid;
+      grid-template-columns:repeat(12, 1fr);
+      gap:16px;
+    }
+
+    .skill-card{
+      grid-column:span 4;
+      padding:24px;
+      min-height:260px;
+      position:relative;
+      overflow:hidden;
+      transform-style:preserve-3d;
+    }
+
+    .skill-card::after{
+      content:"";
+      position:absolute;
+      inset:auto -20% -35% auto;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(123,220,255,.18), transparent 68%);
+      pointer-events:none;
+    }
+
+    .skill-card h3{
+      margin:0 0 14px;
+      font-size:1.15rem;
+    }
+
+    .skill-card ul{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:10px;
+    }
+
+    .skill-card li{
+      color:#d6e2f5;
+      position:relative;
+      padding-left:18px;
+      line-height:1.5;
+    }
+
+    .skill-card li::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:.62em;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 14px rgba(123,220,255,.55);
+    }
+
+    .skill-card small{
+      display:block;
+      margin-top:16px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:.9rem;
+    }
+
+    .timeline{
+      display:grid;
+      gap:18px;
+      position:relative;
+    }
+
+    .timeline-item{
+      display:grid;
+      grid-template-columns:170px 1fr;
+      gap:18px;
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .timeline-item::before{
+      content:"";
+      position:absolute;
+      left:188px;
+      top:0;
+      bottom:0;
+      width:1px;
+      background:linear-gradient(180deg, rgba(123,220,255,.28), rgba(255,255,255,.05));
+    }
+
+    .time{
+      position:relative;
+      padding-left:18px;
+      color:#c9d5ea;
+      font-weight:700;
+    }
+
+    .time::before{
+      content:"";
+      position:absolute;
+      left:-4px;
+      top:.35em;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--accent);
+      box-shadow:0 0 0 6px rgba(123,220,255,.12), 0 0 22px rgba(123,220,255,.5);
+    }
+
+    .timeline-body h3{
+      margin:0 0 6px;
+      font-size:1.15rem;
+    }
+
+    .timeline-body .place{
+      color:var(--accent);
+      margin-bottom:10px;
+      font-weight:600;
+    }
+
+    .timeline-body p{
+      margin:0;
+      color:#d4def0;
+      line-height:1.75;
+    }
+
+    .edu-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .edu-card{
+      padding:22px;
+    }
+
+    .edu-card .period{
+      display:inline-block;
+      margin-bottom:12px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      color:#d6e5fb;
+      font-size:.86rem;
+    }
+
+    .edu-card h3{
+      margin:0 0 8px;
+      font-size:1.08rem;
+    }
+
+    .edu-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .contact-panel{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+      padding:20px;
+    }
+
+    .contact-main,
+    .contact-side{
+      padding:22px;
+      border-radius:26px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+    }
+
+    .contact-main h3,
+    .contact-side h3{
+      margin:0 0 14px;
+      font-size:1.2rem;
+    }
+
+    .contact-main p,
+    .contact-side p{
+      color:#d3ddf0;
+      line-height:1.8;
+      margin:0 0 16px;
+    }
+
+    .contact-list{
+      display:grid;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .contact-item{
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .contact-item span{
+      color:var(--muted);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .contact-item a,
+    .contact-item strong{
+      color:#f7fbff;
+      text-decoration:none;
+      font-size:1rem;
+    }
+
+    .mini-list{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .mini-list div{
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      color:#d4def1;
+    }
+
+    .footer{
+      padding:44px 0 60px;
+      color:var(--muted-2);
+      text-align:center;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(22px);
+      transition:opacity .8s ease, transform .8s ease;
+    }
+
+    .reveal.visible{
+      opacity:1;
+      transform:none;
+    }
+
+    .tilt{
+      transform-style:preserve-3d;
+      will-change:transform;
+      transition:transform .18s ease-out;
+    }
+
+    @media (max-width: 1120px){
+      .hero{
+        grid-template-columns:1fr;
+        gap:34px;
+      }
+      .hero-visual{
+        min-height:560px;
+        order:-1;
+      }
+      .about-grid,
+      .contact-panel{
+        grid-template-columns:1fr;
+      }
+      .skills-grid .skill-card{
+        grid-column:span 6;
+      }
+    }
+
+    @media (max-width: 760px){
+      .wrap{
+        width:min(var(--max), calc(100% - 24px));
+      }
+      .nav{
+        border-radius:24px;
+      }
+      .nav-inner{
+        min-height:auto;
+        padding:14px;
+        align-items:flex-start;
+        flex-direction:column;
+      }
+      .nav-links{
+        width:100%;
+        justify-content:flex-start;
+      }
+      .hero{
+        padding-top:36px;
+      }
+      .hero-meta{
+        grid-template-columns:1fr;
+      }
+      .skills-grid .skill-card{
+        grid-column:span 12;
+      }
+      .timeline-item{
+        grid-template-columns:1fr;
+      }
+      .timeline-item::before{
+        display:none;
+      }
+      .edu-grid{
+        grid-template-columns:1fr;
+      }
+      .hero-visual{
+        min-height:460px;
+      }
+      .portrait-shell{
+        position:relative
+        z-index:10;
+      }
+      .visual-badge{
+        min-width:unset;
+        max-width:160px;
+        font-size:.9rem;
+      }
+      .b1{left:0;top:8%}
+      .b2{right:0;top:20%}
+      .b3{left:5%;bottom:6%}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div class="grid"></div>
+  <div class="noise"></div>
+
+  <div class="wrap">
+    <nav class="nav reveal">
+      <div class="nav-inner">
+        <div class="brand">
+          <div class="brand-mark">GS</div>
+          <div class="brand-copy">
+            <strong>Gautier Souffois</strong>
+            <span>Infrastructure • Réseau • Cybersécurité</span>
+          </div>
+        </div>
+
+        <div class="nav-links">
+          <a href="#apropos">Profil</a>
+          <a href="#competences">Compétences</a>
+          <a href="#experience">Expérience</a>
+          <a href="#formation">Formation</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">Recherche d’alternance — Mastère Manager en Infrastructures et Cybersécurité des SI</div>
+
+        <h1>
+          Construire,
+          <span class="gradient">sécuriser</span>
+          et faire évoluer les infrastructures.
+        </h1>
+
+        <p class="hero-sub">
+          Administrateur systèmes et réseaux, je développe mon parcours autour de l’exploitation,
+          de la sécurisation et de la fiabilité des environnements SI. Mon objectif : intégrer une
+          alternance ambitieuse pour poursuivre en mastère et monter en responsabilité sur des sujets
+          infrastructure, réseau et cybersécurité.
+        </p>
+
+        <div class="hero-meta">
+          <div class="meta-card tilt">
+            <span>Positionnement</span>
+            <strong>Infrastructure & cybersécurité opérationnelle</strong>
+          </div>
+          <div class="meta-card tilt">
+            <span>Recherche</span>
+            <strong>Alternance mastère à partir de 2026</strong>
+          </div>
+          <div class="meta-card tilt">
+            <span>Base</span>
+            <strong>Douvres-la-Délivrande / mobilité à étudier</strong>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact">Me contacter</a>
+          <a class="btn btn-secondary" href="#experience">Voir mon parcours</a>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="orbital"></div>
+        <div class="ring"></div>
+        <div class="ring-2"></div>
+
+        <div class="visual-badge b1 tilt">
+          <span>Focus</span>
+          <strong>Systèmes, réseau, sécurité du SI</strong>
+        </div>
+
+        <div class="visual-badge b2 tilt">
+          <span>Environnement</span>
+          <strong>Windows Server, Linux, AD, VLAN, Firewall</strong>
+        </div>
+
+        <div class="visual-badge b3 tilt">
+          <span>Objectif</span>
+          <strong>Alternance mastère à impact concret</strong>
+        </div>
+
+        <div class="portrait-shell">
+          <div class="portrait-glow"></div>
+
+          <div class="portrait-card tilt" id="portraitCard">
+            <div class="portrait-frame">
+              <img src="photo.png" alt="Portrait de Gautier Souffois">
+              <div class="scanlines"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="apropos" class="section">
+      <div class="section-head reveal">
+        <h2>Un profil orienté terrain et évolution.</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="panel about-main reveal tilt">
+          <p>
+            Mon parcours s’appuie sur une expérience concrète en alternance, en lien avec l’administration
+            systèmes et réseaux, la gestion d’environnements Windows/Linux, la supervision, la sauvegarde,
+            le support et la sécurisation du SI.
+          </p>
+          <p>
+            Je cherche aujourd’hui une alternance qui me permette de franchir un cap : participer à des
+            projets plus structurants, renforcer ma vision globale des infrastructures, et développer une
+            expertise plus poussée en cybersécurité appliquée.
+          </p>
+
+          <div class="tags">
+            <div class="tag">Administration Windows / Linux</div>
+            <div class="tag">Active Directory & GPO</div>
+            <div class="tag">Support N1 / N2</div>
+            <div class="tag">Supervision & sauvegardes</div>
+            <div class="tag">Réseau & segmentation</div>
+            <div class="tag">Sécurisation du SI</div>
+          </div>
+        </div>
+
+        <div class="panel about-side reveal tilt">
+          <p>
+            Au-delà de la technique, je valorise une approche rigoureuse : comprendre les usages,
+            documenter, diagnostiquer, remettre en état, déployer proprement et sécuriser durablement.
+          </p>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>2 ans</strong>
+              <span>de progression en alternance sur des missions systèmes et réseaux</span>
+            </div>
+            <div class="stat">
+              <strong>2 langues</strong>
+              <span>français langue maternelle, anglais opérationnel</span>
+            </div>
+            <div class="stat">
+              <strong>1 cap</strong>
+              <span>mastère professionnel orienté infrastructures et cybersécurité</span>
+            </div>
+            <div class="stat">
+              <strong>1 logique</strong>
+              <span>terrain, fiabilité, sécurité, évolution</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="competences" class="section">
+      <div class="section-head reveal">
+        <h2>Compétences techniques.</h2>
+        <p>
+          Une base solide pour intervenir sur l’administration, l’exploitation et la sécurisation
+          d’environnements d’entreprise, avec une montée en puissance naturelle vers des sujets plus
+          avancés d’infrastructure et de cyberdéfense.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <article class="panel skill-card reveal tilt">
+          <h3>Systèmes</h3>
+          <ul>
+            <li>Windows Server</li>
+            <li>Linux</li>
+            <li>Active Directory</li>
+            <li>GPO</li>
+            <li>Gestion des droits utilisateurs</li>
+          </ul>
+          <small>Administration courante, structure des environnements, gestion des accès et maintenance opérationnelle.</small>
+        </article>
+
+        <article class="panel skill-card reveal tilt">
+          <h3>Réseau</h3>
+          <ul>
+            <li>TCP/IP</li>
+            <li>VLAN</li>
+            <li>DHCP / DNS</li>
+            <li>Routage</li>
+            <li>Équipements réseau</li>
+          </ul>
+          <small>Vision technique des flux, segmentation, services réseau indispensables au fonctionnement du SI.</small>
+        </article>
+
+        <article class="panel skill-card reveal tilt">
+          <h3>Sécurité & exploitation</h3>
+          <ul>
+            <li>PfSense</li>
+            <li>Stormshield</li>
+            <li>Sauvegardes</li>
+            <li>Supervision</li>
+            <li>Sécurité systèmes</li>
+          </ul>
+          <small>Approche orientée disponibilité, contrôle, continuité d’activité et réduction de la surface de risque.</small>
+        </article>
+      </div>
+    </section>
+
+    <section id="experience" class="section">
+      <div class="section-head reveal">
+        <h2>Expérience professionnelle.</h2>
+        <p>
+          Le parcours montre une montée en responsabilités progressive sur des missions concrètes :
+          support, exploitation, remise en état, mise en service, diagnostic, supervision et administration
+          systèmes/réseaux.
+        </p>
+      </div>
+
+      <div class="timeline">
+        <article class="panel timeline-item reveal tilt">
+          <div class="time">09/2025 — 08/2026</div>
+          <div class="timeline-body">
+            <h3>Administrateur Systèmes & Réseaux</h3>
+            <div class="place">LEBAUDY — Lonlay l’Abbaye — Alternance</div>
+            <p>
+              Intervention sur l’administration systèmes et infrastructures, avec une logique de continuité
+              opérationnelle, de stabilité des services et d’évolution progressive vers des enjeux plus
+              structurants de sécurité et d’exploitation.
+            </p>
+          </div>
+        </article>
+
+        <article class="panel timeline-item reveal tilt">
+          <div class="time">09/2023 — 08/2025</div>
+          <div class="timeline-body">
+            <h3>Technicien Système et Réseau</h3>
+            <div class="place">LEBAUDY — Lonlay l’Abbaye — Alternance</div>
+            <p>
+              Support utilisateurs N1/N2, administration serveurs Windows/Linux, Active Directory, GPO,
+              supervision, sauvegardes, gestion de parc, diagnostic de panne, remise en état des équipements
+              et accompagnement à l’installation de nouveaux matériels.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="formation" class="section">
+      <div class="section-head reveal">
+        <h2>Formation.</h2>
+        <p>
+          Un parcours déjà cohérent avec la suite visée : renforcer une base technique solide par un mastère
+          professionnalisant orienté management des infrastructures et cybersécurité des SI.
+        </p>
+      </div>
+
+      <div class="edu-grid">
+        <article class="panel edu-card reveal tilt">
+          <span class="period">09/2025 — 09/2026</span>
+          <h3>CESI — Caen</h3>
+          <p>Bachelor Informatique — Administrateur Systèmes & Réseaux.</p>
+        </article>
+
+        <article class="panel edu-card reveal tilt">
+          <span class="period">09/2023 — 09/2025</span>
+          <h3>CESI — Caen</h3>
+          <p>TSR Informatique — Technicien Systèmes & Réseaux, avec félicitations.</p>
+        </article>
+
+        <article class="panel edu-card reveal tilt">
+          <span class="period">10/2021 — 07/2022</span>
+          <h3>DJ Network — Paris</h3>
+          <p>Bachelor Musique, avec félicitations. Parcours atypique, révélateur d’autonomie et d’engagement.</p>
+        </article>
+
+        <article class="panel edu-card reveal tilt">
+          <span class="period">2017 — 2019</span>
+          <h3>Institut Lemonnier</h3>
+          <p>Baccalauréat STI2D.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="section-head reveal">
+        <h2>Entrer en contact.</h2>
+        <p>
+          Je recherche une alternance où je peux contribuer rapidement, apprendre dans un cadre exigeant,
+          et évoluer sur des sujets d’infrastructure, de réseau et de cybersécurité avec un vrai niveau
+          d’attente technique.
+        </p>
+      </div>
+
+      <div class="panel contact-panel reveal">
+        <div class="contact-main tilt">
+          <h3>Disponibilité & objectif</h3>
+          <p>
+            Je souhaite rejoindre une structure où la technique a du sens : exploitation, sécurisation,
+            maintien en condition opérationnelle, projets d’évolution et accompagnement des usages.
+          </p>
+          <p>
+            Je suis particulièrement intéressé par les environnements où l’on attend de la rigueur,
+            de la fiabilité, de la curiosité technique et une vraie progression.
+          </p>
+
+          <div class="contact-list">
+            <div class="contact-item">
+              <span>Email</span>
+              <a href="mailto:gsouffois@gmail.com">gsouffois@gmail.com</a>
+            </div>
+            <div class="contact-item">
+              <span>Téléphone</span>
+              <strong>07 72 04 10 57</strong>
+            </div>
+            <div class="contact-item">
+              <span>Localisation</span>
+              <strong>Douvres-la-Délivrande</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-side tilt">
+          <h3>Repères rapides</h3>
+          <p>
+            Profil administrateur / technicien systèmes & réseaux, avec intérêt fort pour les sujets
+            d’infrastructure sécurisée et de cybersécurité opérationnelle.
+          </p>
+
+          <div class="mini-list">
+            <div>Français : langue maternelle</div>
+            <div>Anglais : opérationnel</div>
+            <div>Centres d’intérêt : badminton, musique, jeux</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      © 2026 — Gautier Souffois
+    </footer>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("scene");
+    const ctx = canvas.getContext("2d");
+
+    let w = canvas.width = innerWidth;
+    let h = canvas.height = innerHeight;
+    let cx = w / 2;
+    let cy = h / 2;
+
+    const pointer = { x: cx, y: cy, tx: cx, ty: cy };
+    const points = [];
+    const POINT_COUNT = Math.min(90, Math.max(56, Math.floor(w / 18)));
+
+    function resize(){
+      w = canvas.width = innerWidth;
+      h = canvas.height = innerHeight;
+      cx = w / 2;
+      cy = h / 2;
+      buildPoints();
+    }
+
+    function rand(min, max){
+      return Math.random() * (max - min) + min;
+    }
+
+    function buildPoints(){
+      points.length = 0;
+      for(let i = 0; i < POINT_COUNT; i++){
+        points.push({
+          x: rand(0, w),
+          y: rand(0, h),
+          vx: rand(-0.22, 0.22),
+          vy: rand(-0.18, 0.18),
+          r: rand(1.2, 2.8),
+          phase: rand(0, Math.PI * 2)
+        });
+      }
+    }
+
+    buildPoints();
+
+    window.addEventListener("resize", resize);
+
+    window.addEventListener("mousemove", e => {
+      pointer.tx = e.clientX;
+      pointer.ty = e.clientY;
+    });
+
+    window.addEventListener("touchmove", e => {
+      if(!e.touches[0]) return;
+      pointer.tx = e.touches[0].clientX;
+      pointer.ty = e.touches[0].clientY;
+    }, { passive: true });
+
+    function drawBackground(){
+      const grad = ctx.createRadialGradient(
+        pointer.x, pointer.y, 0,
+        pointer.x, pointer.y, Math.max(w, h) * 0.48
+      );
+      grad.addColorStop(0, "rgba(123,220,255,0.11)");
+      grad.addColorStop(0.3, "rgba(138,125,255,0.07)");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    function animate(){
+      ctx.clearRect(0, 0, w, h);
+
+      pointer.x += (pointer.tx - pointer.x) * 0.07;
+      pointer.y += (pointer.ty - pointer.y) * 0.07;
+
+      drawBackground();
+
+      for(const p of points){
+        p.x += p.vx + Math.sin(performance.now() * 0.0004 + p.phase) * 0.05;
+        p.y += p.vy + Math.cos(performance.now() * 0.00035 + p.phase) * 0.05;
+
+        if(p.x < -40) p.x = w + 40;
+        if(p.x > w + 40) p.x = -40;
+        if(p.y < -40) p.y = h + 40;
+        if(p.y > h + 40) p.y = -40;
+      }
+
+      for(let i = 0; i < points.length; i++){
+        const a = points[i];
+
+        for(let j = i + 1; j < points.length; j++){
+          const b = points[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+
+          if(d < 130){
+            ctx.strokeStyle = `rgba(125, 210, 255, ${0.12 * (1 - d / 130)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+
+        const dp = Math.hypot(a.x - pointer.x, a.y - pointer.y);
+        if(dp < 180){
+          ctx.strokeStyle = `rgba(194, 237, 255, ${0.16 * (1 - dp / 180)})`;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(pointer.x, pointer.y);
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(225,245,255,.88)";
+        ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(123,220,255,.18)";
+        ctx.arc(a.x, a.y, a.r * 3.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+    // animate();
+
+    const reveals = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.12 });
+
+    reveals.forEach(el => io.observe(el));
+
+    function applyTilt(el, e){
+      const r = el.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const ry = (px - 0.5) * 10;
+      const rx = (0.5 - py) * 10;
+      el.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
+    }
+
+    function resetTilt(el){
+      el.style.transform = "";
+    }
+
+    document.querySelectorAll(".tilt").forEach(el => {
+      el.addEventListener("mousemove", e => applyTilt(el, e));
+      el.addEventListener("mouseleave", () => resetTilt(el));
+      el.addEventListener("touchend", () => resetTilt(el), { passive:true });
+    });
+
+    const portraitCard = document.getElementById("portraitCard");
+    document.addEventListener("mousemove", e => {
+      const x = (e.clientX / innerWidth - 0.5) * 12;
+      const y = (e.clientY / innerHeight - 0.5) * 10;
+      portraitCard.style.transform = `rotateY(${-10 + x * 0.35}deg) rotateX(${8 - y * 0.35}deg) translateY(${Math.sin(performance.now()*0.0012)*-4}px)`;
+      document.querySelector(".ring").style.transform = `translate(-50%,-50%) rotate(${x * 1.6}deg)`;
+      document.querySelector(".ring-2").style.transform = `translate(-50%,-50%) rotate(${-x * 1.2}deg)`;
+    });
+  </script>
+</body>
+</html>
